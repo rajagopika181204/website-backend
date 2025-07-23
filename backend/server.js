@@ -25,9 +25,9 @@ app.use('/images', express.static('images')); // Serving static images
 // MySQL connection
 async function connectDB() {
   return await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'RYSF@rysf123',
+    host: 'tech-gadget-db.cr2ue6u44sny.eu-north-1.rds.amazonaws.com',
+    user: 'admin',
+    password: 'ramchin123',
     database: 'techstore',
   });
 }
