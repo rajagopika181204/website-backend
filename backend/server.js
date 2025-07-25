@@ -12,7 +12,7 @@ const PORT = 5000;
 const JWT_SECRET = '123!@#';
 
 app.use(cors({
-  origin: true,
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
@@ -31,7 +31,6 @@ async function connectDB() {
     database: 'techstore',
   });
 }
-
 
 // Update with your DB connection path
 
@@ -523,7 +522,28 @@ app.post("/api/verify-payment", (req, res) => {
 });
 
 
-// Start the Server
-app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
+// 🔥 Route to convert image file to base64 and send to frontend
+app.get('/api/image-base64/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const imagePath = path.join(__dirname, 'images', filename); // images folder inside backend
+
+  try {
+    // Check if image file exists
+    if (!fs.existsSync(imagePath)) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+
+    const ext = path.extname(filename).slice(1); // jpg, png etc
+    const base64 = fs.readFileSync(imagePath, { encoding: 'base64' });
+
+    res.json({
+      image: `data:image/${ext};base64,${base64}` // send base64 with correct MIME type
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to convert image', details: err.message });
+  }
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running at http://0.0.0.0:${PORT}`);
 });
